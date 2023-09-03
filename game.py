@@ -46,8 +46,18 @@ start_time_fall = 0
 
 running = True
 
+#font 
+font = pygame.font.Font('graphics/subatomic.ttf',32)
+#live 
+live = 2
+# live_title = font.render(f'''Live: ${live}''','#fff')
 
+#score
+score = 0
+# score_title = font.render(f'''Score: ${live}''','#fff')
 
+#lvl
+level = 1
 
 while running:
 
@@ -71,6 +81,7 @@ while running:
             screen.blit(img_air_craft,(x_air_craft,y_air_craft))
     
 
+    pygame.time.Clock().tick(60)
     
 
             
@@ -93,35 +104,52 @@ while running:
 
 
    
-
+    #xử lý bắn đạn
     for laser in lst_laser: 
         laser.y -= speed_laser 
         screen.blit(img_laser,(laser.x ,laser.y))
         if laser.y < 0:
             lst_laser.remove(laser)    
+ 
 
 
-
-
+    #Xử lý thiên thạch rơi
     for metoer in lst_meteor: 
         
         metoer.x += -2
         metoer.y += speed_meteor
         screen.blit(img_meteor,(metoer.x ,metoer.y))
-        if metoer.y > screen_height + 100:
+        if metoer.y > screen_height:
             lst_meteor.remove(metoer)    
 
 
-
+        #Xử lý đạn bắn thiên thạch tăng điểm
         for laser in lst_laser:
-            if metoer.colliderect(laser): 
+            if metoer.colliderect(laser) : 
                 lst_laser.remove(laser)
-                lst_meteor.remove(metoer)
-        
+                if metoer in lst_meteor:
+                    lst_meteor.remove(metoer)
+                    score += 10
+                if score % 100 == 0 : 
+                    level += 1
+                #Tăng số lượng rơi
+                time_fall -= 10 * level      
+                #Tăng tốc độ rơi
+                speed_meteor +=  level * 0.1     
 
 
     #Đưa máy bay lên màn hình
     screen.blit(img_air_craft,(x_air_craft,y_air_craft))
+    #Hiển thị điểm
+    score_title = font.render(f'''Score: {score}''',True,'white')
+    screen.blit(score_title, ((screen_width//2 - score_title.get_width()//2 ) , screen_height - 100) )
+    #Hiển thị lvl
+    level_title = font.render(f'''Level: {level}''',True, 'white')
+    screen.blit(level_title, (10 , 10) )
+    #Hiển thị mạng
+    live_title = font.render(f'''Live: {live}''',True, 'white')
+    screen.blit(live_title , (screen_width - live_title.get_width() - 10, 10 ))
+
     rect_air_craft = pygame.Rect(x_air_craft,y_air_craft,width_air_craft,height_air_craft)#Hình chữ nhật của máy bay
     pygame.display.flip()
 pygame.quit()
