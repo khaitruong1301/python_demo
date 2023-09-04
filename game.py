@@ -108,7 +108,7 @@ while running:
         metoer.x += -2
         metoer.y += speed_meteor
         screen.blit(img_meteor,(metoer.x ,metoer.y))
-        if metoer.y > screen_height + 100:
+        if metoer.y == screen_height + 100:
             lst_meteor.remove(metoer)    
 
 
